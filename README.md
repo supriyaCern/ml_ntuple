@@ -1,5 +1,7 @@
 Use WriteHits/python/ml_ntuple_cfi.py to generate ml_ntuple.root 
+
 Copy the configuration file form GenConfig to Configuration/Generator/python/
+
 cp ml_ntuple/GenConfig/SingleMuPt100_hgcal_cfi.py Configuration/Generator/python/SingleMuPt100_hgcal_cfi.py
 
 Use following commands to generate, step1.root and step2.root files.
