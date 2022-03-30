@@ -321,12 +321,12 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if(id1 == id){
 	  if(thic == 2)
 	    hADC_200_wi->Fill(hgcSample.data());
-	  E_[kk][nHit_[kk]] += itHit->energy()*1.e6;
+	  E_[kk][nHit_[kk]-1] += itHit->energy()*1.e6;
 	  HepGeom::Point3D<float> gcoord = HepGeom::Point3D<float>(global3.x(), global3.y(), global3.z());
 	  double tof = (gcoord.mag() * CLHEP::cm) / CLHEP::c_light;
 	  double time = itHit->time() ;
 	  time -= tof ;
-	  t_[kk][nHit_[kk]] = time;
+	  t_[kk][nHit_[kk]-1] = time;
 	}
       }
       }
