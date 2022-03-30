@@ -298,7 +298,7 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       const HGCSample& hgcSample = it.sample(2);
       p4.SetXYZT(global3.x(), global3.y(), global3.z(), 0);
       kk = rhtools_.getLayerWithOffset(id) - lay_off;
-      if(nHit_[kk]!=0) nHit_[kk]++;
+      //if(nHit_[kk]!=0) nHit_[kk]++;
       //z[kk] = global3.z();
       X_[kk][nHit_[kk]] = global3.x();
       Y_[kk][nHit_[kk]] = global3.y();
@@ -313,7 +313,7 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
       else thic = 4;
       thick_[kk][nHit_[kk]] = thic;
-      //nHit_[kk]++;
+      nHit_[kk]++;
       for(PCaloHitContainer::const_iterator itHit= simhit->begin(); itHit!= simhit->end(); ++itHit) {
 	//HGCSiliconDetId id1(itHit->id());
 	DetId id1 = static_cast<DetId>(itHit->id());
