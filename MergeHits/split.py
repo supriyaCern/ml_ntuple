@@ -1,8 +1,8 @@
 import ROOT as rt
 import array as ar
 
-inHE = rt.TFile.Open("ml_ntuple_HE3.root", "READ")
-outfile2 = rt.TFile("ml_ntupleHE1.root", "RECREATE")
+inHE = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/21_3/ml_ntuple_HE3.root", "READ")
+outfile2 = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/21_3/ml_ntupleHE1.root", "RECREATE")
 
 nHit = ar.array('i', [0])
 X_ = ar.array('f', 2000*[0.0])
