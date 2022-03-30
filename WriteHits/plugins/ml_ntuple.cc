@@ -142,7 +142,7 @@ private:
   int n_layers;
   int lay_off;
   TTree **out_tree;
-  int nHit_[47] = {0};
+  int nHit_[47] = {-1};
   float X_[47][2000] = {{0}};
   float Y_[47][2000] = {{0}};
   float E_[47][2000] = {{0}};
@@ -260,7 +260,7 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     //}
   //}
   for(int ii=0;ii<47;ii++){
-    nHit_[ii] = 0;
+    nHit_[ii] = -1;
     for(int jj=0;jj<2000;jj++){
       X_[ii][jj] = 0;
       Y_[ii][jj] = 0;
@@ -285,20 +285,20 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       HGCSiliconDetId id(it.id());
       GlobalPoint global3 = geom->getPosition(id);
       if (global3.z() > 0){
-      const HGCSample& hgcSample = it.sample(2);
-      p4.SetXYZT(global3.x(), global3.y(), global3.z(), 0);
-      kk = rhtools_.getLayerWithOffset(id) - lay_off;
-      //z[kk] = global3.z();
-      X_[kk][nHit_[kk]] = global3.x();
-      Y_[kk][nHit_[kk]] = global3.y();
-      adc_[kk][nHit_[kk]] = hgcSample.data();
-      //t_[kk][nHit_[kk]] = time;
-      UShort_t thic = 0;
-      if (id.type()==HGCSiliconDetId::HGCalFine) thic = 1;
-      else if(id.type()==HGCSiliconDetId::HGCalCoarseThin) thic = 2;
-      else thic = 3;
-      thick_[kk][nHit_[kk]] = thic;
-      nHit_[kk]++;
+	const HGCSample& hgcSample = it.sample(2);
+	p4.SetXYZT(global3.x(), global3.y(), global3.z(), 0);
+	kk = rhtools_.getLayerWithOffset(id) - lay_off;
+	nHit_[kk]++;
+	//z[kk] = global3.z();
+	X_[kk][nHit_[kk]] = global3.x();
+	Y_[kk][nHit_[kk]] = global3.y();
+	adc_[kk][nHit_[kk]] = hgcSample.data();
+	//t_[kk][nHit_[kk]] = time;
+	UShort_t thic = 0;
+	if (id.type()==HGCSiliconDetId::HGCalFine) thic = 1;
+	else if(id.type()==HGCSiliconDetId::HGCalCoarseThin) thic = 2;
+	else thic = 3;
+	thick_[kk][nHit_[kk]] = thic;
       }
       for(PCaloHitContainer::const_iterator itHit= simhit->begin(); itHit!= simhit->end(); ++itHit) {
 	HGCSiliconDetId id1(itHit->id());
