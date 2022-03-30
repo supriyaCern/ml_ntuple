@@ -5,6 +5,7 @@ inHE = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/21_3/ml_ntuple_HE3.root", 
 inHEB = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/21_3/ml_ntuple_HEB3.root", "READ")
 outfile2 = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/21_3/ml_ntupleHE2.root", "RECREATE")
 
+print('open')
 nHit = ar.array('i', [0])
 X_ = ar.array('f', 2000*[0.0])
 Y_ = ar.array('f', 2000*[0.0])
