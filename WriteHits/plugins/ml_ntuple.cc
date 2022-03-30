@@ -313,7 +313,7 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
       else thic = 4;
       thick_[kk][nHit_[kk]] = thic;
-      nHit_[kk]++;
+      //nHit_[kk]++;
       for(PCaloHitContainer::const_iterator itHit= simhit->begin(); itHit!= simhit->end(); ++itHit) {
 	//HGCSiliconDetId id1(itHit->id());
 	DetId id1 = static_cast<DetId>(itHit->id());
