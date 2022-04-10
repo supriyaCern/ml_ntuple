@@ -42,7 +42,7 @@ process.source = cms.Source("PoolSource",
                                       #'file:/home/idas/t3store3/root_files/HGCAL_Geometry/SimOut/DeltaPt/Extended2026D83/step1_3.root',
                                       #'file:/home/idas/t3store3/root_files/HGCAL_Geometry/SimOut/DeltaPt/Extended2026D83/step1_4.root'
     #fileNames = cms.untracked.vstring('file:/home/idas/t3store3/root_files/HGCAL_Geometry/SimOut/DeltaPt/Extended2026D86/step1.root')
-    fileNames = cms.untracked.vstring('file:/eos/user/p/psuryade/ml_ntuples/21_3/step2.root')
+    fileNames = cms.untracked.vstring('file:/eos/user/p/psuryade/ml_ntuples/31_3/step2_nonoise.root')
     #fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/psuryade/private/CMSSW/CMSSW_12_2_X_2021-11-22-1100/src/step1.root')
 )
 
@@ -69,7 +69,7 @@ process.Events = cms.EDAnalyzer('ml_ntuple',
 #process.Tracer = cms.Service("Tracer")
 
 process.TFileService = cms.Service("TFileService",
-     fileName = cms.string('/eos/user/p/psuryade/ml_ntuples/21_3/ml_ntuple_HEB3.root')
+     fileName = cms.string('/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntuple_HEB3.root')
  )
 
 process.p = cms.Path(process.Events)

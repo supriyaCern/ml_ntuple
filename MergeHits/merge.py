@@ -1,9 +1,9 @@
 import ROOT as rt
 import array as ar
 
-inHE = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/21_3/ml_ntuple_HE3.root", "READ")
-inHEB = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/21_3/ml_ntuple_HEB3.root", "READ")
-outfile2 = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/21_3/ml_ntupleHE2.root", "RECREATE")
+inHE = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntuple_HE3.root", "READ")
+inHEB = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntuple_HEB3.root", "READ")
+outfile2 = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntupleHE2.root", "RECREATE")
 
 print('open')
 nHit = ar.array('i', [0])
