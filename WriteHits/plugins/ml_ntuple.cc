@@ -150,6 +150,7 @@ private:
   uint16_t adc_[47][20000] = {{0}};
   UShort_t thick_[47][20000] = {{0}};
   TH1D *hADC_200_wi;
+  TH1D *hE_200;
   //double E_[100][100] = {{0}};
   
   edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeomToken_; 
@@ -196,7 +197,8 @@ ml_ntuple::ml_ntuple(const edm::ParameterSet& iConfig)
   //n_layers = (name == "HGCalEESensitive") ? 26 : 21;
   //lay_off = (name == "HGCalEESensitive") ? 1 : 27;
   out_tree = new TTree*[n_layers];
-  hADC_200_wi = fs->make<TH1D>("hADC_200_wi", "ADC_200_wi", 100, 0.0, 200.0);  
+  hADC_200_wi = fs->make<TH1D>("hADC_200_wi", "ADC_200_wi", 100, 0.0, 200.0);
+  hE_200 = fs->make<TH1D>("hE_200", "E_200", 100, 0.0, 200.0);
   for(int kk = 0; kk < n_layers; kk++){
     out_tree[kk] = fs->make<TTree>(Form("layer_%02d",(kk+lay_off)), Form("hits in layer %02d",(kk+1)));
     out_tree[kk]->Branch("nHit", &nHit_[kk], "nHit/I");
@@ -295,40 +297,42 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       DetId id = static_cast<DetId>(it.id());
       GlobalPoint global3 = geom->getPosition(id);
       if (global3.z() > 0){
-      const HGCSample& hgcSample = it.sample(2);
-      p4.SetXYZT(global3.x(), global3.y(), global3.z(), 0);
-      kk = rhtools_.getLayerWithOffset(id) - lay_off;
-      //if(nHit_[kk]!=0) nHit_[kk]++;
-      //z[kk] = global3.z();
-      X_[kk][nHit_[kk]] = global3.x();
-      Y_[kk][nHit_[kk]] = global3.y();
-      adc_[kk][nHit_[kk]] = hgcSample.data();
-      //t_[kk][nHit_[kk]] = time;
-      UShort_t thic = 0;
-      if(name == "HGCalEESensitive" or name == "HGCalHESiliconSensitive"){
-	HGCSiliconDetId id2(it.id());
-	if (id2.type()==HGCSiliconDetId::HGCalFine) thic = 1;
-	else if(id2.type()==HGCSiliconDetId::HGCalCoarseThin) thic = 2;
-	else thic = 3;
-      }
-      else thic = 4;
-      thick_[kk][nHit_[kk]] = thic;
-      nHit_[kk]++;
-      for(PCaloHitContainer::const_iterator itHit= simhit->begin(); itHit!= simhit->end(); ++itHit) {
-	//HGCSiliconDetId id1(itHit->id());
-	DetId id1 = static_cast<DetId>(itHit->id());
-	//GlobalPoint global2 = geom->getPosition(id);
-	if(id1 == id){
-	  if(thic == 2)
-	    hADC_200_wi->Fill(hgcSample.data());
-	  E_[kk][nHit_[kk]-1] += itHit->energy()*1.e6;
-	  HepGeom::Point3D<float> gcoord = HepGeom::Point3D<float>(global3.x(), global3.y(), global3.z());
-	  double tof = (gcoord.mag() * CLHEP::cm) / CLHEP::c_light;
-	  double time = itHit->time() ;
-	  time -= tof ;
-	  t_[kk][nHit_[kk]-1] = time;
+	const HGCSample& hgcSample = it.sample(2);
+	p4.SetXYZT(global3.x(), global3.y(), global3.z(), 0);
+	kk = rhtools_.getLayerWithOffset(id) - lay_off;
+	//if(nHit_[kk]!=0) nHit_[kk]++;
+	//z[kk] = global3.z();
+	X_[kk][nHit_[kk]] = global3.x();
+	Y_[kk][nHit_[kk]] = global3.y();
+	adc_[kk][nHit_[kk]] = hgcSample.data();
+	//t_[kk][nHit_[kk]] = time;
+	UShort_t thic = 0;
+	if(name == "HGCalEESensitive" or name == "HGCalHESiliconSensitive"){
+	  HGCSiliconDetId id2(it.id());
+	  if (id2.type()==HGCSiliconDetId::HGCalFine) thic = 1;
+	  else if(id2.type()==HGCSiliconDetId::HGCalCoarseThin) thic = 2;
+	  else thic = 3;
 	}
-      }
+	else thic = 4;
+	thick_[kk][nHit_[kk]] = thic;
+	nHit_[kk]++;
+	for(PCaloHitContainer::const_iterator itHit= simhit->begin(); itHit!= simhit->end(); ++itHit) {
+	  //HGCSiliconDetId id1(itHit->id());
+	  DetId id1 = static_cast<DetId>(itHit->id());
+	  //GlobalPoint global2 = geom->getPosition(id);
+	  if(id1 == id){
+	    E_[kk][nHit_[kk]-1] += itHit->energy()*1.e6;
+	    HepGeom::Point3D<float> gcoord = HepGeom::Point3D<float>(global3.x(), global3.y(), global3.z());
+	    double tof = (gcoord.mag() * CLHEP::cm) / CLHEP::c_light;
+	    double time = itHit->time() ;
+	    time -= tof ;
+	    t_[kk][nHit_[kk]-1] = time;
+	  }
+	}
+	if((thic == 2) &&  (E_[kk][nHit_[kk]-1] > 0.01)){
+	   hADC_200_wi->Fill(hgcSample.data());
+	   hE_200->Fill(E_[kk][nHit_[kk]-1])
+	
       }
     }
   }
