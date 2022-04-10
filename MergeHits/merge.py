@@ -20,7 +20,7 @@ outtree2 = []
 hADC_200_wi = inHE.Get('Events/hADC_200_wi').Clone()
 hE_200 = inHE.Get('Events/hE_200').Clone()
 hADC_200_wi.Add(inHEB.Get('Events/hADC_200_wi'))
-hE_200.Add(inHE.Get('Events/hE_200'))
+hE_200.Add(inHEB.Get('Events/hE_200'))
 
 for i in range(34, 48):
     intree.append(inHE.Get("Events/layer_" + str(i)))
