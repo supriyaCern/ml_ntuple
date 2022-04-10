@@ -34,7 +34,8 @@ for i in range(34, 48):
     outtree2[-1].Branch("ADC", adc_, "ADC[nHit]/s")
     outtree2[-1].Branch("Thick", thick_, "Thick[nHit]/s")
 
-for j in range(1000):
+n = intree[-1].GetEntriesFast()
+for j in range(n):
     for i in range(34,48):
         intree[i-34].GetEntry(j)
         intreeB[i-34].GetEntry(j)
