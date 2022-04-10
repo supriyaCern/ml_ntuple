@@ -331,8 +331,8 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 	if((thic == 2) &&  (E_[kk][nHit_[kk]-1] > 0.01)){
 	   hADC_200_wi->Fill(hgcSample.data());
-	   hE_200->Fill(E_[kk][nHit_[kk]-1])
-	
+	   hE_200->Fill(E_[kk][nHit_[kk]-1]);
+	}
       }
     }
   }
