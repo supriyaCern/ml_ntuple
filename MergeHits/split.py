@@ -5,15 +5,18 @@ inHE = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntuple_HE3.root", 
 outfile2 = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntupleHE1.root", "RECREATE")
 
 nHit = ar.array('i', [0])
-X_ = ar.array('f', 2000*[0.0])
-Y_ = ar.array('f', 2000*[0.0])
-E_ = ar.array('f', 2000*[0.0])
-t_ = ar.array('f', 2000*[0.0])
-adc_ = ar.array('H', 2000*[0])
-thick_ = ar.array('H', 2000*[0])
+X_ = ar.array('f', 20000*[0.0])
+Y_ = ar.array('f', 20000*[0.0])
+E_ = ar.array('f', 20000*[0.0])
+t_ = ar.array('f', 20000*[0.0])
+adc_ = ar.array('H', 20000*[0])
+thick_ = ar.array('H', 20000*[0])
 intree = []
 intreeB = []
 outtree2 = []
+
+hADC_200_wi = inHE.Get('Events/hADC_200_wi').clone()
+hE_200 = inHE.Get('Events/hE_200').clone()
 
 for i in range(27, 34):
     intree.append(inHE.Get("Events/layer_" + str(i)))
@@ -26,7 +29,8 @@ for i in range(27, 34):
     outtree2[-1].Branch("ADC", adc_, "ADC[nHit]/s")
     outtree2[-1].Branch("Thick", thick_, "Thick[nHit]/s")
 
-for j in range(1000):
+n = intree[-1].GetEntriesFast()
+for j in range(n):
     for i in range(27,34):
         intree[i-27].GetEntry(j)
         nHitsi = intree[i-27].nHit 
@@ -44,6 +48,9 @@ for j in range(1000):
 tdir = outfile2.mkdir("Events")
 #tdir = rt.TDirectory('Events', 'Events')
 tdir.cd()
+hADC_200_wi.Write()
+hE_200.Write()
+
 for i in range(27, 34):
     outtree2[i-34].Write()
 #tdir.Write()

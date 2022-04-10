@@ -17,6 +17,11 @@ intree = []
 intreeB = []
 outtree2 = []
 
+hADC_200_wi = inHE.Get('Events/hADC_200_wi').clone()
+hE_200 = inHE.Get('Events/hE_200').clone()
+hADC_200_wi.Add(inHEB.Get('Events/hADC_200_wi'))
+hE_200.Add(inHE.Get('Events/hE_200'))
+
 for i in range(34, 48):
     intree.append(inHE.Get("Events/layer_" + str(i)))
     intreeB.append(inHEB.Get("Events/layer_" + str(i)))
@@ -55,6 +60,8 @@ for j in range(1000):
 tdir = outfile2.mkdir("Events")
 #tdir = rt.TDirectory('Events', 'Events')
 tdir.cd()
+hADC_200_wi.Write()
+hE_200.Write()
 for i in range(34, 48):
     outtree2[i-34].Write()
 #tdir.Write()
