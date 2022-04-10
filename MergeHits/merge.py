@@ -17,8 +17,8 @@ intree = []
 intreeB = []
 outtree2 = []
 
-hADC_200_wi = inHE.Get('Events/hADC_200_wi').clone()
-hE_200 = inHE.Get('Events/hE_200').clone()
+hADC_200_wi = inHE.Get('Events/hADC_200_wi').Clone()
+hE_200 = inHE.Get('Events/hE_200').Clone()
 hADC_200_wi.Add(inHEB.Get('Events/hADC_200_wi'))
 hE_200.Add(inHE.Get('Events/hE_200'))
 
