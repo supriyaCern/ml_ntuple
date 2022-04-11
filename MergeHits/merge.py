@@ -58,7 +58,7 @@ for j in range(n):
             t_[nHitsi + ii] = intreeB[i-34].time[ii]
             adc_[nHitsi + ii] = intreeB[i-34].ADC[ii]
             thick_[nHitsi + ii] = intreeB[i-34].Thick[ii]
-            mode_[nHitsi + ii] = intree[i-34].ADC_mode[ii]
+            mode_[nHitsi + ii] = intreeB[i-34].ADC_mode[ii]
         outtree2[i-34].Fill()
         #print(nHit[0])
 
