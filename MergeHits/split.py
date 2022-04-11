@@ -11,6 +11,7 @@ E_ = ar.array('f', 20000*[0.0])
 t_ = ar.array('f', 20000*[0.0])
 adc_ = ar.array('H', 20000*[0])
 thick_ = ar.array('H', 20000*[0])
+mode_ = ar.array('H', 20000*[0])
 intree = []
 intreeB = []
 outtree2 = []
@@ -28,6 +29,7 @@ for i in range(27, 34):
     outtree2[-1].Branch("time", t_, "time[nHit]/F")
     outtree2[-1].Branch("ADC", adc_, "ADC[nHit]/s")
     outtree2[-1].Branch("Thick", thick_, "Thick[nHit]/s")
+    outtree2[-1].Branch("ADC_mode", mode_, "ADC_mode[nHit]/s")
 
 n = intree[-1].GetEntriesFast()
 for j in range(n):
@@ -42,6 +44,7 @@ for j in range(n):
             t_[ii] = intree[i-27].time[ii]
             adc_[ii] = intree[i-27].ADC[ii]
             thick_[ii] = intree[i-27].Thick[ii]
+            mode_[ii] = intree[i-27].ADC_mode[ii]
         outtree2[i-27].Fill()
         #print(nHit[0])
 

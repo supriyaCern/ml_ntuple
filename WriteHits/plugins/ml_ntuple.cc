@@ -149,6 +149,7 @@ private:
   float t_[47][20000] = {{0}};
   uint16_t adc_[47][20000] = {{0}};
   UShort_t thick_[47][20000] = {{0}};
+  uint16_t mode_[47][20000] = {{10}};
   TH1D *hADC_200_wi;
   TH1D *hE_200;
   //double E_[100][100] = {{0}};
@@ -208,6 +209,7 @@ ml_ntuple::ml_ntuple(const edm::ParameterSet& iConfig)
     out_tree[kk]->Branch("time", &t_[kk], "time[nHit]/F");
     out_tree[kk]->Branch("ADC", &adc_[kk], "ADC[nHit]/s");
     out_tree[kk]->Branch("Thick", &thick_[kk], "Thick[nHit]/s");
+    out_tree[kk]->Branch("ADC_mode", &mode_[kk], "ADC_mode[nHit]/s");
     //for(int ii = 0;ii<100;ii++){
       //for(int jj = 0;jj<100;jj++){
         //out_tree->Branch(Form("eta_%02d_phi%02d",ii, jj), &E_[ii][jj]);
@@ -280,6 +282,7 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       t_[ii][jj] = 0;
       adc_[ii][jj] = 0;
       thick_[ii][jj] = 0;
+      mode_[ii][jj] = 10;
     }
   }
 
@@ -305,6 +308,7 @@ ml_ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	X_[kk][nHit_[kk]] = global3.x();
 	Y_[kk][nHit_[kk]] = global3.y();
 	adc_[kk][nHit_[kk]] = hgcSample.data();
+	mode_[kk][nHit_[kk]] = hgcSample.mode();
 	//t_[kk][nHit_[kk]] = time;
 	UShort_t thic = 0;
 	if(name == "HGCalEESensitive" or name == "HGCalHESiliconSensitive"){
