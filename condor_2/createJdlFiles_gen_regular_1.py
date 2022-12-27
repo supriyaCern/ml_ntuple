@@ -5,14 +5,13 @@ import subprocess
 import time
 
 #IMPORT MODULES FROM OTHER DIR
+
 import argparse as arg
 
 
 parser = arg.ArgumentParser(description='Find Accuracy')
 parser.add_argument('-i', '--particle', dest='particle', type=str, default='ele', help="particle")
 parser.add_argument('--PU', dest='pu', type=str, default='00', help="PU")
-parser.add_argument('--pt', dest='pTin', type=str, default='25', help="pT")
-parser.add_argument('--eta', dest='eta_in', type=str, default='2.2', help="eta")
 args = parser.parse_args()
 
 if args.particle == 'ele':
@@ -28,15 +27,16 @@ else:
     print('Select correct particle from [ele, pos, jets]')
     exit()
 
-if int(args.pu) not in [0, 100, 200]:
-    print('Select correct PU from [00, 100, 200]')
+if int(args.pu) not in [0, 35, 70, 100, 150, 200]:
+    print('Select correct PU from [00, 35, 70, 100, 150, 200]')
     exit()
 
+part = args.particle
 PU = args.pu
-pTin = args.pTin
-eta_in = args.eta_in
+#pTin = '100'
+#eta_in = '2.2'
 
-Geom_1 = [args.particle + '_PU_' + PU + '_pT_' + pTin + '_eta_' + eta_in]
+Geom_1 = [part + PU + '_1']
 #D86 = ["Extended2026D83"]
 
 
@@ -46,14 +46,15 @@ condorLogDir = "log"
 tarFile = Geom_1[0] + "/generator.tar.gz"
 if os.path.exists(tarFile):
     os.system("rm %s"%tarFile)
-os.system("tar -zcvf %s ../../Configuration/Generator ../../ml_ntuple --exclude condor"%tarFile)
-os.system('cp rungen_' + PU + '_mono.sh ' + Geom_1[0])
+#os.system("tar -zcvf %s ../../Configuration/Generator ../../ml_ntuple --exclude condor"%tarFile)
+os.system('cp generator.tar.gz ' + tarFile)
+os.system('cp rungen_' + PU + '_1.sh ' + Geom_1[0])
 common_command = \
 'Universe   = vanilla\n\
 should_transfer_files = YES\n\
 when_to_transfer_output = ON_EXIT\n\
-Transfer_Input_Files = generator.tar.gz, rungen_' + PU + '_mono.sh, SingleElectronPt100_hgcal_cfi.py\n\
-x509userproxy = /home/psuryade/work/validation/CMSSW_12_4_0_pre4/src/ml_ntuple/condor/x509up_u56618\n\
+Transfer_Input_Files = generator.tar.gz, rungen_' + PU + '_1.sh, SingleElectronPt100_hgcal_cfi.py\n\
+x509userproxy = /afs/cern.ch/user/p/psuryade/private/validation/CMSSW_12_4_0_pre4/src/ml_ntuple/condor_2/x509up_u135619\n\
 use_x509userproxy = true\n\
 RequestCpus = 4\n\
 +BenchmarkJob = True\n\
@@ -67,13 +68,13 @@ gen_file = \
 "import FWCore.ParameterSet.Config as cms\n\
 generator = cms.EDFilter('Pythia8PtGun',\n\
                          PGunParameters = cms.PSet(\n\
-        MaxPt = cms.double(" + str(int(pTin)+0.001) + "),\n\
-        MinPt = cms.double(" + str(int(pTin)-0.001) + "),\n\
-        ParticleID = cms.vint32(" + pdg_id + "),\n\
+        MaxPt = cms.double(250),\n\
+        MinPt = cms.double(25),\n\
+        ParticleID = cms.vint32(22),\n\
         AddAntiParticle = cms.bool(True),\n\
-        MaxEta = cms.double(" + str(float(eta_in)+0.0001) + "),\n\
+        MaxEta = cms.double(2.8),\n\
         MaxPhi = cms.double(3.14159265359),\n\
-        MinEta = cms.double(" + str(float(eta_in)-0.0001) + "),\n\
+        MinEta = cms.double(1.6),\n\
         MinPhi = cms.double(-3.14159265359) ## in radians \n\
         ),\n\
                          Verbosity = cms.untracked.int32(0),\n\
@@ -93,12 +94,13 @@ genFile = open(Geom_1[0] + '/' + genName, 'w')
 genFile.write(gen_file)
 jdlName = 'submitJobs_%s.jdl'%(geom_par)
 jdlFile = open(Geom_1[0] + '/%s'%jdlName,'w')
-jdlFile.write('Executable =  rungen_' + PU + '_mono.sh \n')
+jdlFile.write('Executable =  rungen_' + PU + '_1.sh \n')
 jdlFile.write(common_command)
 jdlFile.write("X=$(step)\n")
 for sample in sampleList:
     condorOutDir1="/eos/user/p/psuryade/ml_ntuples"
-    os.system("xrdfs root://eosuser.cern.ch mkdir -p %s/%s"%(condorOutDir1, sample))
+    condorOutDir="/cms/store/user/psuryade/ml_ntuples"
+    os.system("xrdfs root://se01.indiacms.res.in/ mkdir -p %s/%s"%(condorOutDir, sample))
     #condorOutDir="/cms/store/user/idas/SimOut/DeltaPt"
     #os.system("xrdfs root://se01.indiacms.res.in/ mkdir -p %s/%s"%(condorOutDir, sample))
     run_command =  'Arguments  = %s $INT(X) \nQueue 5\n\n' %(sample)
