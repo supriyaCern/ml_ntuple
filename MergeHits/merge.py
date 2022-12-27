@@ -1,19 +1,35 @@
 import ROOT as rt
 import array as ar
+import argparse
 
-inHE = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntuple_HE3.root", "READ")
-inHEB = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntuple_HEB3.root", "READ")
-outfile2 = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntupleHE2.root", "RECREATE")
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('--inHE', dest='inHE', type=str,
+                    help='infile HE')
+parser.add_argument('--inHEB', dest='inHEB', type=str,
+                    help='infile HEB')
+parser.add_argument('--outHE2', dest='outHE2', type=str,
+                    help='outfile HE2')
+
+args = parser.parse_args()
+
+print(args.inHE)
+inHE = rt.TFile.Open(args.inHE, 'READ')
+inHEB = rt.TFile.Open(args.inHEB, 'READ')
+outfile2 = rt.TFile.Open(args.outHE2, 'RECREATE')
+#inHE = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/08_6/ml_ntuple_HEp_nn.root", "READ")
+#inHEB = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/08_6/ml_ntuple_HEBp_nn.root", "READ")
+#outfile2 = rt.TFile.Open("/eos/user/p/psuryade/ml_ntuples/08_6/ml_ntupleHE2p_nn.root", "RECREATE")
 
 print('open')
 nHit = ar.array('i', [0])
-X_ = ar.array('f', 2000*[0.0])
-Y_ = ar.array('f', 2000*[0.0])
-E_ = ar.array('f', 2000*[0.0])
-t_ = ar.array('f', 2000*[0.0])
-adc_ = ar.array('H', 2000*[0])
-thick_ = ar.array('H', 2000*[0])
-mode_ = ar.array('H', 20000*[0])
+X_ = ar.array('f', 10000*[0.0])
+Y_ = ar.array('f', 10000*[0.0])
+E_ = ar.array('f', 10000*[0.0])
+t_ = ar.array('f', 10000*[0.0])
+adc_ = ar.array('H', 10000*[0])
+thick_ = ar.array('H', 10000*[0])
+mode_ = ar.array('H', 10000*[0])
+zside_ = ar.array('h', 10000*[0])
 intree = []
 intreeB = []
 outtree2 = []
@@ -35,9 +51,11 @@ for i in range(34, 48):
     outtree2[-1].Branch("ADC", adc_, "ADC[nHit]/s")
     outtree2[-1].Branch("Thick", thick_, "Thick[nHit]/s")
     outtree2[-1].Branch("ADC_mode", mode_, "ADC_mode[nHit]/s")
+    outtree2[-1].Branch("z_side", zside_, "z_side[nHit]/S")
 
 n = intree[-1].GetEntriesFast()
 for j in range(n):
+    print(j)
     for i in range(34,48):
         intree[i-34].GetEntry(j)
         intreeB[i-34].GetEntry(j)
@@ -51,7 +69,9 @@ for j in range(n):
             adc_[ii] = intree[i-34].ADC[ii]
             thick_[ii] = intree[i-34].Thick[ii]
             mode_[ii] = intree[i-34].ADC_mode[ii]
+            zside_[ii] = intree[i-34].z_side[ii]
         for ii in range(intreeB[i-34].nHit):
+            #print(i, nHitsi, ii, intreeB[i-34].nHit)
             X_[nHitsi + ii] = intreeB[i-34].X[ii]
             Y_[nHitsi + ii] = intreeB[i-34].Y[ii]
             E_[nHitsi + ii] = intreeB[i-34].SimHitE[ii]
@@ -59,6 +79,7 @@ for j in range(n):
             adc_[nHitsi + ii] = intreeB[i-34].ADC[ii]
             thick_[nHitsi + ii] = intreeB[i-34].Thick[ii]
             mode_[nHitsi + ii] = intreeB[i-34].ADC_mode[ii]
+            zside_[nHitsi + ii] = intreeB[i-34].z_side[ii]
         outtree2[i-34].Fill()
         #print(nHit[0])
 
