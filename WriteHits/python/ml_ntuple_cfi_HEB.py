@@ -1,5 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 
+from FWCore.ParameterSet.VarParsing import VarParsing
+options = VarParsing ('analysis')
+options.parseArguments()
 
 # from Configuration.Eras.Era_Phase2C11_cff import Phase2C11
 # process = cms.Process('PROD',Phase2C11)
@@ -26,6 +29,7 @@ process.load("IOMC.RandomEngine.IOMC_cff")
 process.RandomNumberGeneratorService.generator.initialSeed = 456789
 
 process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring (options.inputFiles),
     #fileNames = cms.untracked.vstring('file:SingleMuFlatPt2To100_cfi_py_GEN_geo_default_Phase2C11_Extended2026D83_higheta.root')
     #fileNames = cms.untracked.vstring('file:SingleMuFlatPt2To100_cfi_py_GEN_geo_default_Phase2C11_Extended2026D86_higheta.root')
     #fileNames = cms.untracked.vstring('file:/home/idas/t3store3/root_files/HGCAL_Geometry/step1_D86.root')
@@ -42,7 +46,7 @@ process.source = cms.Source("PoolSource",
                                       #'file:/home/idas/t3store3/root_files/HGCAL_Geometry/SimOut/DeltaPt/Extended2026D83/step1_3.root',
                                       #'file:/home/idas/t3store3/root_files/HGCAL_Geometry/SimOut/DeltaPt/Extended2026D83/step1_4.root'
     #fileNames = cms.untracked.vstring('file:/home/idas/t3store3/root_files/HGCAL_Geometry/SimOut/DeltaPt/Extended2026D86/step1.root')
-    fileNames = cms.untracked.vstring('file:/eos/user/p/psuryade/ml_ntuples/31_3/step2_nonoise.root')
+    #fileNames = cms.untracked.vstring('file:/eos/user/p/psuryade/ml_ntuples/08_6/step2p_nn.root')
     #fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/p/psuryade/private/CMSSW/CMSSW_12_2_X_2021-11-22-1100/src/step1.root')
 )
 
@@ -69,7 +73,7 @@ process.Events = cms.EDAnalyzer('ml_ntuple',
 #process.Tracer = cms.Service("Tracer")
 
 process.TFileService = cms.Service("TFileService",
-     fileName = cms.string('/eos/user/p/psuryade/ml_ntuples/01_4/ml_ntuple_HEB3.root')
+     fileName = cms.string(options.outputFile)
  )
 
 process.p = cms.Path(process.Events)
