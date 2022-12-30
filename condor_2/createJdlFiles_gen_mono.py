@@ -7,7 +7,6 @@ import time
 #IMPORT MODULES FROM OTHER DIR
 import argparse as arg
 
-
 parser = arg.ArgumentParser(description='Find Accuracy')
 parser.add_argument('-i', '--particle', dest='particle', type=str, default='ele', help="particle")
 parser.add_argument('--PU', dest='pu', type=str, default='00', help="PU")
@@ -24,8 +23,14 @@ elif args.particle == 'pos':
 elif args.particle == 'jets':
     particle = 'Jet'
     pdg_id = '5'
+elif args.particle == 'muon':
+    particle = 'Muon'
+    pdg_id = '13'
+elif args.particle == 'muplus':
+    particle = 'Muplus'
+    pdg_id = '-13'
 else:
-    print('Select correct particle from [ele, pos, jets]')
+    print('Select correct particle from [ele, pos, jets, mu, muplus]')
     exit()
 
 if int(args.pu) not in [0, 100, 200]:
@@ -37,8 +42,6 @@ pTin = args.pTin
 eta_in = args.eta_in
 
 Geom_1 = [args.particle + '_PU_' + PU + '_pT_' + pTin + '_eta_' + eta_in]
-#D86 = ["Extended2026D83"]
-
 
 if not os.path.exists(Geom_1[0] + "/log"):
     os.makedirs(Geom_1[0] + "/log")
@@ -46,14 +49,14 @@ condorLogDir = "log"
 tarFile = Geom_1[0] + "/generator.tar.gz"
 if os.path.exists(tarFile):
     os.system("rm %s"%tarFile)
-os.system("tar -zcvf %s ../../Configuration/Generator ../../ml_ntuple --exclude condor"%tarFile)
+os.system("tar -zcvf %s ../../Configuration/Generator ../../ml_ntuple --exclude condor_2"%tarFile)
 os.system('cp rungen_' + PU + '_mono.sh ' + Geom_1[0])
 common_command = \
 'Universe   = vanilla\n\
 should_transfer_files = YES\n\
 when_to_transfer_output = ON_EXIT\n\
 Transfer_Input_Files = generator.tar.gz, rungen_' + PU + '_mono.sh, SingleElectronPt100_hgcal_cfi.py\n\
-x509userproxy = /home/psuryade/work/validation/CMSSW_12_4_0_pre4/src/ml_ntuple/condor/x509up_u56618\n\
+x509userproxy = $ENV(X509_USER_PROXY)\n\
 use_x509userproxy = true\n\
 RequestCpus = 4\n\
 +BenchmarkJob = True\n\
@@ -97,8 +100,9 @@ jdlFile.write('Executable =  rungen_' + PU + '_mono.sh \n')
 jdlFile.write(common_command)
 jdlFile.write("X=$(step)\n")
 for sample in sampleList:
-    condorOutDir1="/eos/user/p/psuryade/ml_ntuples"
+    condorOutDir1="/eos/cms/store/group/dpg_hgcal/comm_hgcal/geomval/ntuples"
     os.system("xrdfs root://eosuser.cern.ch mkdir -p %s/%s"%(condorOutDir1, sample))
+    # condorOutDir1="/eos/user/p/psuryade/ml_ntuples"
     #condorOutDir="/cms/store/user/idas/SimOut/DeltaPt"
     #os.system("xrdfs root://se01.indiacms.res.in/ mkdir -p %s/%s"%(condorOutDir, sample))
     run_command =  'Arguments  = %s $INT(X) \nQueue 5\n\n' %(sample)
