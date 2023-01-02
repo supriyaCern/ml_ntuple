@@ -72,14 +72,17 @@ printf "Simulation completed at ";/bin/date
 #---------------------------------------------
 #Copy the ouput root files
 #---------------------------------------------
-condorOutDir1=/eos/user/p/psuryade/ml_ntuples/${geom}
-condorOutDir=/cms/store/user/psuryade/ml_ntuples/$geom
+condorOutDir=/eos/cms/store/group/dpg_hgcal/comm_hgcal/geomval/ntuples/${geom}
+#condorOutDir1=/cms/store/user/psuryade/ml_ntuples/$geom
 if [ -z ${_CONDOR_SCRATCH_DIR} ] ; then
     echo "Running Interactively" ;
 else
+    #copy the root files to avoid crash due to *.py scripts
+    #xrdcp -f *.root root://eosuser.cern.ch/${condorOutDir}
+    xrdcp -f ml_ntuple${tag}.root root://eosuser.cern.ch/${condorOutDir}
     #xrdcp -f ${sample}_tree_*.root root://se01.indiacms.res.in:1094/${condorOutDir}/${year} 
-    xrdcp -f ml_ntuple${tag}.root root://se01.indiacms.res.in/${condorOutDir}
-    xrdcp -f step1_${index}.root root://se01.indiacms.res.in/${condorOutDir}
+    #xrdcp -f ml_ntuple${tag}.root root://se01.indiacms.res.in/${condorOutDir}
+    #xrdcp -f step1_${index}.root root://se01.indiacms.res.in/${condorOutDir}
     echo "Cleanup"
     cd ../../
     rm -rf $CMSVER
