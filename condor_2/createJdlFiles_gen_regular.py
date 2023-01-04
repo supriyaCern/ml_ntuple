@@ -23,8 +23,14 @@ elif args.particle == 'pos':
 elif args.particle == 'jets':
     particle = 'Jet'
     pdg_id = '5'
+elif args.particle == 'muon':
+    particle = 'Muon'
+    pdg_id = '13'
+elif args.particle == 'muplus':
+    particle = 'Muplus'
+    pdg_id = '-13'
 else:
-    print('Select correct particle from [ele, pos, jets]')
+    print('Select correct particle from [ele, pos, jets, mu, muplus]')
     exit()
 
 if int(args.pu) not in [0, 35, 70, 100, 150, 200]:
@@ -46,7 +52,7 @@ condorLogDir = "log"
 tarFile = Geom_1[0] + "/generator.tar.gz"
 if os.path.exists(tarFile):
     os.system("rm %s"%tarFile)
-#os.system("tar -zcvf %s ../../Configuration/Generator ../../ml_ntuple --exclude condor_2"%tarFile)
+os.system("tar -zcvf %s ../../Configuration/Generator ../../ml_ntuple --exclude condor_2"%tarFile)
 os.system('cp generator.tar.gz ' + tarFile)
 os.system('cp rungen_' + PU + '.sh ' + Geom_1[0])
 common_command = \
@@ -54,7 +60,7 @@ common_command = \
 should_transfer_files = YES\n\
 when_to_transfer_output = ON_EXIT\n\
 Transfer_Input_Files = generator.tar.gz, rungen_' + PU + '.sh, SingleElectronPt100_hgcal_cfi.py\n\
-x509userproxy = /afs/cern.ch/user/p/psuryade/private/validation/CMSSW_12_4_0_pre4/src/ml_ntuple/condor_2/x509up_u135619\n\
+x509userproxy = $ENV(X509_USER_PROXY)\n\
 use_x509userproxy = true\n\
 RequestCpus = 4\n\
 +BenchmarkJob = True\n\
@@ -70,7 +76,7 @@ generator = cms.EDFilter('Pythia8PtGun',\n\
                          PGunParameters = cms.PSet(\n\
         MaxPt = cms.double(250),\n\
         MinPt = cms.double(25),\n\
-        ParticleID = cms.vint32(22),\n\
+        ParticleID = cms.vint32(" + pdg_id + "),\n\
         AddAntiParticle = cms.bool(True),\n\
         MaxEta = cms.double(2.8),\n\
         MaxPhi = cms.double(3.14159265359),\n\
@@ -98,9 +104,11 @@ jdlFile.write('Executable =  rungen_' + PU + '.sh \n')
 jdlFile.write(common_command)
 jdlFile.write("X=$(step)\n")
 for sample in sampleList:
-    condorOutDir1="/eos/user/p/psuryade/ml_ntuples"
-    condorOutDir="/cms/store/user/psuryade/ml_ntuples"
-    os.system("xrdfs root://se01.indiacms.res.in/ mkdir -p %s/%s"%(condorOutDir, sample))
+    condorOutDir1="/eos/cms/store/group/dpg_hgcal/comm_hgcal/geomval/ntuples"
+    os.system("xrdfs root://eosuser.cern.ch mkdir -p %s/%s"%(condorOutDir1, sample))
+    # condorOutDir1="/eos/user/p/psuryade/ml_ntuples"
+    # condorOutDir="/cms/store/user/psuryade/ml_ntuples"
+    # os.system("xrdfs root://se01.indiacms.res.in/ mkdir -p %s/%s"%(condorOutDir, sample))
     #condorOutDir="/cms/store/user/idas/SimOut/DeltaPt"
     #os.system("xrdfs root://se01.indiacms.res.in/ mkdir -p %s/%s"%(condorOutDir, sample))
     run_command =  'Arguments  = %s $INT(X) \nQueue 10\n\n' %(sample)
