@@ -70,6 +70,7 @@ Transfer_Input_Files = generator.tar.gz, rungen_' + PU + '_1.sh, SingleElectronP
 x509userproxy = $ENV(X509_USER_PROXY)\n\
 use_x509userproxy = true\n\
 RequestCpus = 4\n\
+RequestDisk = 40GB\n\
 +BenchmarkJob = True\n\
 #+JobFlavour = "testmatch"\n\
 +MaxRuntime = 259200\n\

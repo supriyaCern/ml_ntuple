@@ -48,7 +48,9 @@ grep -n "process.RandomNumberGeneratorService.generator.initialSeed" SingleElect
 cmsRun SingleElectronPt100_hgcal_cfi_GEN_SIM.py
 #cmsRun MinBias_14TeV_pythia8_TuneCUETP8M1_cfi_GEN_SIM.py
 
-cmsDriver.py step2  -s DIGI:pdigi_valid,L1TrackTrigger,L1,DIGI2RAW,HLT:@fake2 --conditions auto:phase2_realistic_T21 --datatier GEN-SIM-DIGI-RAW -n 700 --eventcontent FEVTDEBUGHLT --geometry Extended2026D86 --era Phase2C17I13M9 --pileup AVE_70_BX_25ns --pileup_input root://se01.indiacms.res.in//cms/store/user/psuryade/ml_ntuples/PU_14_1/step1_${index}.root --filein  file:step1_${index}.root  --fileout file:step2_${index}.root --nThreads 4
+xrdcp -f root://se01.indiacms.res.in//cms/store/user/psuryade/ml_ntuples/PU_14_1/step1_${index}.root step1_MinBias_${index}.root
+
+cmsDriver.py step2  -s DIGI:pdigi_valid,L1TrackTrigger,L1,DIGI2RAW,HLT:@fake2 --conditions auto:phase2_realistic_T21 --datatier GEN-SIM-DIGI-RAW -n 700 --eventcontent FEVTDEBUGHLT --geometry Extended2026D86 --era Phase2C17I13M9 --pileup AVE_70_BX_25ns --pileup_input file:step1_MinBias_${index}.root --filein  file:step1_${index}.root  --fileout file:step2_${index}.root --nThreads 4
 
 
 
