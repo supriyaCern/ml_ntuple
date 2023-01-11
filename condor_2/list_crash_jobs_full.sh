@@ -14,8 +14,8 @@ nofstdouts=`ls *.stdout | wc -l`
 echo "The number of stderr files : $nofstderrs"
 echo "The number of stdout files : $nofstdouts"
 
-grep -i -E 'break|crash|segmentation|error' *.stderr | grep -v -E "TDecompLU|Error\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\[Error\ \ \]\[PostMaster\ \ \ \ \ \ \ \ \]\[\ 1201\]\ \[eoshome-p\.cern\.ch\:1094\]\ Forcing\ error\ on\ disconnect|Error\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\[Error\ \ \]\[PostMaster\ \ \ \ \ \ \ \ \]\[\ 1201\]\ \[eosuser\.cern\.ch\:1094\]\ Forcing\ error\ on\ disconnect" > $errorfile
-grep -i -E 'break|crash|segmentation|error' *.stderr | grep -v -E "TDecompLU|Error\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\[Error\ \ \]\[PostMaster\ \ \ \ \ \ \ \ \]\[\ 1201\]\ \[eoshome-p\.cern\.ch\:1094\]\ Forcing\ error\ on\ disconnect|Error\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\[Error\ \ \]\[PostMaster\ \ \ \ \ \ \ \ \]\[\ 1201\]\ \[eosuser\.cern\.ch\:1094\]\ Forcing\ error\ on\ disconnect" | cut -f 1 -d '.' > $outputfile
+grep -i -E 'break|crash|segmentation|error' *.stderr | grep -v -E "TDecompLU|Error\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\[Error\ \ \]\[PostMaster\ \ \ \ \ \ \ \ \]\[\ [0-9]+\]\ \[eoshome-p\.cern\.ch\:1094\]\ Forcing\ error\ on\ disconnect|Error\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\[Error\ \ \]\[PostMaster\ \ \ \ \ \ \ \ \]\[\ [0-9]+\]\ \[eosuser\.cern\.ch\:1094\]\ Forcing\ error\ on\ disconnect" > $errorfile
+grep -i -E 'break|crash|segmentation|error' *.stderr | grep -v -E "TDecompLU|Error\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\[Error\ \ \]\[PostMaster\ \ \ \ \ \ \ \ \]\[\ [0-9]+\]\ \[eoshome-p\.cern\.ch\:1094\]\ Forcing\ error\ on\ disconnect|Error\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\[Error\ \ \]\[PostMaster\ \ \ \ \ \ \ \ \]\[\ [0-9]+\]\ \[eosuser\.cern\.ch\:1094\]\ Forcing\ error\ on\ disconnect" | cut -f 1 -d '.' > $outputfile
 noflines=`wc -l $outputfile | awk '{print $1}'`
 echo "See the errors in  $errorfile"
 echo "The list of files with error reports are saved in $outputfile with nof line $noflines"
@@ -35,5 +35,5 @@ if [ $noflines -gt 0 ]; then
     done < $filteredoutputfile
     head -n 15 $submitjdl > $resubmitjdl  
     cat $resubmitfile >> $resubmitjdl
-    echo Check and submit the jdl file $resubmitjdl for nof jobs `grep -i "Arguments" $resubmitjdl | wc -l`
+    echo Check and submit the jdl file $resubmitjdl for nof jobs `grep -i "Arguments" $resubmitjdl | wc -l`, dir : $PWD
 fi

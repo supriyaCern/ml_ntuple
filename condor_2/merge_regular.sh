@@ -1,11 +1,11 @@
 
-signal=muon
-signame=Mu_Minus
+signal=muplus
+signame=Mu_Plus
 
 resourcedir=/eos/cms/store/group/dpg_hgcal/comm_hgcal/geomval/ntuples
 outdir=$resourcedir/merged
-#for PU in 00 35
-for PU in 35
+
+for PU in 00 35
 do
     printf -v zpadPU "%03d" $PU
     indir=$resourcedir/${signal}${PU}
@@ -26,7 +26,6 @@ do
     	rm $outfile
     fi
     hadd $outfile ${array[@]}
-    sleep 10
 done
 
 for PU in 70 100 150 200
@@ -56,5 +55,4 @@ do
     	rm $outfile
     fi
     hadd $outfile ${array[@]}
-    sleep 10
 done
