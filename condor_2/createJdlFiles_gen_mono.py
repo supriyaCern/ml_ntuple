@@ -29,8 +29,11 @@ elif args.particle == 'muon':
 elif args.particle == 'muplus':
     particle = 'Muplus'
     pdg_id = '-13'
+elif args.particle == 'photons':
+    particle = 'Photon'
+    pdg_id = '22'
 else:
-    print('Select correct particle from [ele, pos, jets, mu, muplus]')
+    print('Select correct particle from [ele, pos, jets, mu, muplus, photons]')
     exit()
 
 if int(args.pu) not in [0, 100, 200]:

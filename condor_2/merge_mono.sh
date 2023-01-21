@@ -1,6 +1,6 @@
 
-signal=muon
-signalname=Mu_Minus
+signal=jets
+signalname=Jet
 resourcedir=/eos/cms/store/group/dpg_hgcal/comm_hgcal/geomval/ntuples
 outdir=$resourcedir/merged
 for PU in 00 100 200
@@ -14,7 +14,12 @@ do
 	    printf -v zpadpT "%03d" $pT
 	    indir=$resourcedir/${signal}_PU_${PU}_pT_${pT}_eta_${eta}
 	    pre_eta=`echo $eta | cut -d '.' -f 1`
-	    post_eta=`echo $eta | cut -d '.' -f 2`
+	    post_eta1=`echo $eta | cut -d '.' -f 2`	    
+	    if [ ${#post_eta1} -eq 1 ] ; then
+		printf -v post_eta "%1d0" $post_eta1
+	    else
+		printf -v post_eta "%2d" $post_eta1
+	    fi
 	    outfile=$outdir/Raw_Hits_Mono_${signalname}_PU_${zpadPU}_Pt_${zpadpT}_Eta_${pre_eta}pt${post_eta}.root
 	    unset array
 	    declare -a array

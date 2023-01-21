@@ -1,5 +1,5 @@
 
-signal=muon
+signal=jets
 
 basedir=/afs/cern.ch/work/i/idas/CMSSW/CMSSW_12_4_2/src/ml_ntuple/condor_2
 
